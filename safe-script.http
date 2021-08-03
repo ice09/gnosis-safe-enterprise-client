@@ -1,0 +1,89 @@
+### Keycloak Oauth2
+
+# @name jwt
+POST http://localhost:8080/auth/realms/circles/protocol/openid-connect/token HTTP/1.1
+content-type: application/x-www-form-urlencoded
+
+grant_type=password&username=circles&password=q&client_id=verification
+
+
+### Keycloak Bearer Token Request
+GET http://localhost:8989/users/me
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJXQUxucFNDaFVSWlFmRURKZS1qZk02dUd0LWZYWmZhbWR0M0ZzLVoxc0hBIn0.eyJleHAiOjE2MjcxMzUxNDAsImlhdCI6MTYyNzEzNDg0MCwiYXV0aF90aW1lIjoxNjI3MTM0ODQwLCJqdGkiOiJlNWIwZmExMi1mZmNiLTRmY2MtODE3My03MWY3ZmRkODdjN2YiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXV0aC9yZWFsbXMvY2lyY2xlcyIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIyYzAwMTU0MC1lMDAzLTRmZGItODllZS1jZGY5ZDQzMWE5ZTEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ2ZXJpZmljYXRpb24iLCJzZXNzaW9uX3N0YXRlIjoiZDZhNDMzMGUtYjQ2Zi00NWFkLTg4NTktOTYzYTdmYmY5OGE4IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1jaXJjbGVzIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJ3YWxsZXQtYWRkcmVzcyI6IjB4MDUyMyIsIm5hbWUiOiJDSVJDTEVTIFVTRVIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJjaXJjbGVzX3VzZXIiLCJnaXZlbl9uYW1lIjoiQ0lSQ0xFUyIsImZhbWlseV9uYW1lIjoiVVNFUiJ9.OlZShDTlGampZSx1P1uVHdsJR1AW_u3lQv7A_xKz57YUK-DRd7Fb_M9bSSoUL-FG6rH5-_mEk7XYbCYVk05ACMycfotmmMxX307WoWkUR7s7FTTGmFFqL2kBRMzOMQ3L676ePtQcmmngUHKQ722g2lBuwcSBkombTjaTYuEy6wzzF001n43lqn2tcZFlSuYh0dT1Z-5VknLfgBLl3eXovA7ytXv-29imSnCF8CuaVpSbOj0qkqF2V4GLyvpuDKuatPC9JYNNUY9A3JdUaRb9XZZx77ZljRgO7Z99aT6bTD_jSajmIRravPhPVpfEQwGXPt89GziMVNKntu9y5eHNTA
+
+### Deploy Safe
+
+# @name safeDto
+POST http://localhost:8888/api/deploySafe HTTP/1.1
+content-type: application/json
+
+@safeAddress = {{safeDto.response.body.address}}
+
+### Deploy Sample Token with allowance for Safe
+
+# @name tokenDto
+POST http://localhost:8888/api/deploySampleToken?gnosisSafeAddress={{safeAddress}}&value=100 HTTP/1.1
+content-type: application/json
+
+@tokenAddress = {{tokenDto.response.body.address}}
+
+### Create key1 and address1 from Seed 
+
+# @name key1
+GET http://localhost:8888/api/createKey?seed=seed1 HTTP/1.1
+
+@ownerAddress1 = {{key1.response.body.addressHex}}
+
+### Create key2 and address2 from Seed 
+
+# @name key2
+GET http://localhost:8888/api/createKey?seed=seed2 HTTP/1.1
+
+@ownerAddress2 = {{key2.response.body.addressHex}}
+
+### Create key3 and address3 from Seed 
+
+# @name key3
+GET http://localhost:8888/api/createKey?seed=seed3 HTTP/1.1
+
+@ownerAddress3 = {{key3.response.body.addressHex}}
+
+### Setup Safe for owner 1-3
+
+PATCH http://localhost:8888/api/setupSafe HTTP/1.1
+content-type: application/json
+
+{
+  "safeAddress": "{{safeAddress}}",
+  "owners": [
+    "{{ownerAddress1}}",
+    "{{ownerAddress2}}",
+    "{{ownerAddress3}}"
+  ],
+  "threshold": 2
+}
+
+### Sign Transaction with key1
+
+# @name signatureDto1
+GET http://localhost:8888/api/signTransaction?seed=seed1&gnosisSafeAddress={{safeAddress}}&tokenAddress={{tokenAddress}}&to=0x0000000000000000000000000000000000000001&value=10
+
+@signature1 = {{signatureDto1.response.body.signature}}
+
+### Sign Transaction with key2
+
+# @name signatureDto2
+GET http://localhost:8888/api/signTransaction?seed=seed2&gnosisSafeAddress={{safeAddress}}&tokenAddress={{tokenAddress}}&to=0x0000000000000000000000000000000000000001&value=10
+
+@signature2 = {{signatureDto2.response.body.signature}}
+
+### Sign Transaction with key3
+
+# @name signatureDto3
+GET http://localhost:8888/api/signTransaction?seed=seed3&gnosisSafeAddress={{safeAddress}}&tokenAddress={{tokenAddress}}&to=0x0000000000000000000000000000000000000001&value=10
+
+@signature3 = {{signatureDto3.response.body.signature}}
+
+### Send Transaction with key1,sig1,key2,sig2
+
+GET http://localhost:8888/api/sendTransaction?gnosisSafeAddress={{safeAddress}}&tokenAddress={{tokenAddress}}&to=0x0000000000000000000000000000000000000001&value=10&addressAndSignature={{ownerAddress1}};{{signature1}},{{ownerAddress2}};{{signature2}}
