@@ -1,6 +1,10 @@
 ## Gnosis-Safe Client Enterprise Version
 
-Spring Boot Web3j/EVM interface for the Gnosis Safe contracts.
+Spring Boot Web3j/EVM interface for the Gnosis Safe contracts.  
+The Spring Boot web application provides Enterprise-grade User-, Rights- and Rolesmanagement and Access Control.  
+All Gnosis-Safe relevant actions are delegated to the Smart Contract by web3j.
+
+![flow](https://drive.google.com/uc?export=view&id=1GtP6dqA20McmpsDLquvhlJCE43UYtQy6)
 
 ### Prerequisites
 
