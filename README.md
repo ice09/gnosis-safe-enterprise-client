@@ -4,7 +4,7 @@ Spring Boot Web3j/EVM interface for the Gnosis Safe contracts.
 The Spring Boot web application provides Enterprise-grade User-, Rights- and Rolesmanagement, Authentication & Access Control.  
 All Gnosis-Safe relevant actions are delegated to the Smart Contract by web3j.
 
-![flow](https://drive.google.com/uc?export=view&id=143O2tRO2WWzy-EQ2jD0MxmT4y0uYnF4o)
+![flow](https://drive.google.com/uc?export=view&id=1_Yltd2CAQWhsyABwvxKc9U5IzxjS9MJp)
 
 ### Prerequisites
 
